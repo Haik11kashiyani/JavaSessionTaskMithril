@@ -1,112 +1,170 @@
 package com.tss.test;
 
 import com.tss.entitys.BankAccount;
-
 import java.util.Scanner;
+import static com.tss.Validation.ValidationForAll.inputInteger;
+import static com.tss.Validation.ValidationForAll.inputString;
 
 public class Bank {
     public static void main(String[] args) {
-        BankAccount user1=new BankAccount();
-        Scanner scanner =  new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
+        BankAccount bankaccounts[] = new BankAccount[3];
 
-        System.out.println("Enter the Account details");
-        System.out.println("Enter your name :");
-        user1.setName(scanner.nextLine());
+        
+        for (int i = 0; i < bankaccounts.length; i++) {
+            System.out.println("Enter the Account details for the user " + (i + 1));
+            System.out.print("Enter name: ");
+            bankaccounts[i] = new BankAccount();
+            bankaccounts[i].updateName(inputString());
+
+
+            while (true) {
+                System.out.print("Enter the Account account balance: ");
+                double balanceInput = inputInteger();
+                if (balanceInput < 500) {
+                    System.out.println("You cannot enter less than 500");
+                } else {
+                    bankaccounts[i].updatebalance(balanceInput);
+                    break;
+                }
+            }
+
+
+            while (true) {
+                System.out.println("Enter the account type\n1. Current\n2. Savings");
+                int accountType = inputInteger();
+                if (accountType == 1) {
+                    bankaccounts[i].setAccounttype("Current Account");
+                    break;
+                } else if (accountType == 2) {
+                    bankaccounts[i].setAccounttype("Savings Account");
+                    break;
+                } else {
+                    System.out.println("Invalid input. Please choose 1 or 2.");
+                }
+            }
+        }
+
+
         while (true) {
-            System.out.println("Enter the Account account balance :");
-            double balanceInput = scanner.nextDouble();
-            if (balanceInput < 500) {
-                System.out.println("You can not enter less than 500");
+            System.out.println("\n--- MAIN MENU ---");
+            System.out.println("1. Deposit\n2. Withdraw\n3. Balance\n4. Print Information\n5. Transfer to other account\n6. Exit");
+            int choice = inputInteger();
+            int accountNumberInput;
+            int result;
+
+            if (choice == 1) {
+                System.out.print("Enter the account number to deposit: ");
+                accountNumberInput = inputInteger();
+                result = findAccountUser(bankaccounts, accountNumberInput);
+
+                // FIX: Validated against -1 instead of 0
+                if (result == -1) {
+                    System.out.println("Account not found.");
+                } else {
+                    System.out.print("Enter the amount to deposit: ");
+                    double balance = inputInteger();
+                    if (balance < 0) {
+                        System.out.println("Invalid input amount.");
+                    } else {
+                        bankaccounts[result].deposit(balance);
+                        System.out.println("Deposited successfully.");
+                    }
+                }
+            }
+            else if (choice == 2) {
+                System.out.print("Enter the account number to withdraw: ");
+                accountNumberInput = inputInteger();
+                result = findAccountUser(bankaccounts, accountNumberInput);
+
+                if (result == -1) {
+                    System.out.println("Account not found.");
+                } else {
+                    System.out.print("Enter the amount to withdraw: ");
+                    double balance = inputInteger();
+                    if (balance < 0) {
+                        System.out.println("Invalid input amount.");
+                    } else {
+                        if (bankaccounts[result].getBalance() < (500 + balance)) {
+                            System.out.println("500 rupees must remain in the Bank Account");
+                            System.out.println("Current balance: " + bankaccounts[result].getBalance());
+                        } else {
+                            bankaccounts[result].withdraw(balance);
+                            System.out.println("Current balance: " + bankaccounts[result].getBalance());
+                        }
+                    }
+                }
+            }
+            else if (choice == 3) {
+                System.out.print("Enter the account number to get the balance: ");
+                accountNumberInput = inputInteger();
+                result = findAccountUser(bankaccounts, accountNumberInput);
+
+                if (result == -1) {
+                    System.out.println("Account not found.");
+                } else {
+                    System.out.println("Current balance: " + bankaccounts[result].getBalance());
+                }
+            }
+            else if (choice == 4) {
+                System.out.print("Enter the account number to get information: ");
+                accountNumberInput = inputInteger();
+                result = findAccountUser(bankaccounts, accountNumberInput);
+
+                if (result == -1) {
+                    System.out.println("Account not found.");
+                } else {
+                    bankaccounts[result].printAll();
+                }
+            }
+            else if (choice == 5) {
+                System.out.print("Enter your account number to send money: ");
+                accountNumberInput = inputInteger();
+                int resultofsender = findAccountUser(bankaccounts, accountNumberInput);
+
+                if (resultofsender == -1) {
+                    System.out.println("Sender account not found.");
+                } else {
+                    System.out.print("Enter the account number to receive money: ");
+                    int accountNumberInputReceiver = inputInteger();
+                    int resultofreceive = findAccountUser(bankaccounts, accountNumberInputReceiver);
+
+                    if (resultofreceive == -1) {
+                        System.out.println("Receiver account not found.");
+                    } else {
+                        System.out.print("Enter the amount to transfer: ");
+                        double withdrawBalance = inputInteger();
+
+                        if (bankaccounts[resultofsender].getBalance() < (500 + withdrawBalance)) {
+                            System.out.println("Insufficient funds. 500 rupees must remain in your account.");
+                            System.out.println("Your current balance: " + bankaccounts[resultofsender].getBalance());
+                        } else {
+                            bankaccounts[resultofsender].withdraw(withdrawBalance);
+                            bankaccounts[resultofreceive].deposit(withdrawBalance);
+                            System.out.println("Transfer successful!");
+                            System.out.println("Your remaining balance: " + bankaccounts[resultofsender].getBalance());
+                        }
+                    }
+                }
+            }
+            else if (choice == 6) {
+                System.out.println("Thank you for using the banking application!");
+                break;
             }
             else {
-                user1.setBalance(balanceInput);
-                break;
+                System.out.println("Enter a valid choice.");
             }
         }
-        while (true) {
-            System.out.println("enter the account type " +
-                    "1.current" +
-                    "2.savings");
+        scanner.close();
+    }
 
-            int accountType = scanner.nextInt();
 
-            if (accountType ==1) {
-                user1.setAccountType("Current Account");
-
-                break;
-            } else if (accountType==2) {
-                user1.setAccountType("Savings Account");
-                break;
-            } else {
-                System.out.println("invalid input");
-
+    public static int findAccountUser(BankAccount[] arrayofusers, int accounttofind) {
+        for (int i = 0; i < arrayofusers.length; i++) {
+            if (arrayofusers[i] != null && arrayofusers[i].getAccountNumber() == accounttofind) {
+                return i;
             }
         }
-
-        int choice=0;
-        while (true){
-
-
-        System.out.println("enter 1.deposit " +
-                "           2. withdraw " +
-                "3. balance"+
-                "4. print information"+
-                "5. exit"
-        );
-        choice=scanner.nextInt();
-
-        if (choice==1)
-        {
-
-            System.out.println("enter the amount to deposit :");
-            double balance=scanner.nextDouble();
-
-            if (balance<0)
-            {
-                System.out.println("invalid input");
-
-
-            }
-            else {
-                user1.deposit(balance);
-                System.out.println("current balance :"+user1.getBalance());
-            }
-
-
-        } else if (choice==2) {
-            System.out.println("enter the amount to withdraw :");
-            double balance=scanner.nextDouble();
-        if (balance<0){
-            System.out.println("invalid input");
-        }
-        else {
-            if (user1.getBalance()<(500+balance))
-            {
-                System.out.println("500rupees must in Bank Account");
-                System.out.println("current balance :"+user1.getBalance());
-
-            }
-            else
-            {
-                user1.withdraw(balance);
-                System.out.println("current balance :"+user1.getBalance());
-            }
-        }
-        }
-        else if(choice==3)
-        {System.out.println("current balance :"+user1.getBalance());
-
-
-        } else if (choice==4) {
-            user1.printAll();
-        } else if (choice==5) {
-            break;
-        } else {
-            System.out.println("enter valid choice");
-        }
-        }
-
-        BankAccount account2=new BankAccount("Prince",1500,"Saving Account");
-        account2.printAll();
+        return -1;
     }
 }

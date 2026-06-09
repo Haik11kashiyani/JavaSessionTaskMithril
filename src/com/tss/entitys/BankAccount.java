@@ -29,32 +29,44 @@ public class BankAccount {
         accountNumber =  rand.nextInt(99999999 - 10000000 + 1) + 10000000;
 
     }
-    private String getName() {
+    public String getName() {
         return name;
+    }public long getAccountNumber() {
+        return accountNumber;
     }
-    private int getid() {
+    public void updateName(String newName) {
+        setName(newName);
+    }
+    public void setAccounttype(String newAccountType) {
+        setAccountType(newAccountType);
+    }
+    public void updatebalance(double balance){
+        setBalance(balance);
+    }
+
+    public int getid() {
         return id;
     }
     public double getBalance() {
         return balance;
     }
-    private String getaccountType()
+    public String getaccountType()
     {
         return accountType;
     }
-    public void setAccountType(String accountType)
+    private void setAccountType(String accountType)
     {
         this.accountType=accountType;
     }
-    public void setId(int id)
+    private void setId(int id)
     {
         this.id=id;
     }
-    public void setBalance(double balance)
+    private void setBalance(double balance)
     {
         this.balance=balance;
     }
-    public void setName(String name)
+    private void setName(String name)
     {
         this.name=name;
     }
