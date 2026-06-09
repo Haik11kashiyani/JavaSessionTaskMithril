@@ -8,9 +8,9 @@ import static com.tss.Validation.ValidationForAll.inputString;
 public class Bank {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        BankAccount bankaccounts[] = new BankAccount[3];
+        BankAccount bankaccounts[] = new BankAccount[1];
 
-        
+
         for (int i = 0; i < bankaccounts.length; i++) {
             System.out.println("Enter the Account details for the user " + (i + 1));
             System.out.print("Enter name: ");
@@ -47,7 +47,7 @@ public class Bank {
 
 
         while (true) {
-            System.out.println("\n--- MAIN MENU ---");
+
             System.out.println("1. Deposit\n2. Withdraw\n3. Balance\n4. Print Information\n5. Transfer to other account\n6. Exit");
             int choice = inputInteger();
             int accountNumberInput;
@@ -107,14 +107,17 @@ public class Bank {
                 }
             }
             else if (choice == 4) {
-                System.out.print("Enter the account number to get information: ");
-                accountNumberInput = inputInteger();
-                result = findAccountUser(bankaccounts, accountNumberInput);
+                System.out.println("Account ID\t|\tAccount Holder Name\t|\tAccount Number\t|\tAccount Type\t|\tAccount Balance");
 
-                if (result == -1) {
-                    System.out.println("Account not found.");
-                } else {
-                    bankaccounts[result].printAll();
+
+                for (int i = 0; i < bankaccounts.length; i++) {
+                    System.out.println(
+                            bankaccounts[i].getid() + "\t|\t" +
+                                    bankaccounts[i].getName() + "\t|\t" +
+                                    bankaccounts[i].getAccountNumber() + "\t|\t" +
+                                    bankaccounts[i].getaccountType() + "\t|\t" +
+                                    bankaccounts[i].getBalance()
+                    );
                 }
             }
             else if (choice == 5) {
