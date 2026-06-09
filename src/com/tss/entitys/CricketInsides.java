@@ -21,19 +21,19 @@ public class CricketInsides {
             this.wickets=wickets;
             this.numberOfMatch=numberOfMatch;
         }
-        private String getName() {
+    public String getName() {
             return name;
         }
-    private int getid() {
+    public int getid() {
         return id;
     }
-    private int getNumberOfMatch() {
+    public int getNumberOfMatch() {
         return numberOfMatch;
     }
-    private int getWickets() {
+    public int getWickets() {
         return wickets;
     }
-    private int getRuns() {
+    public int getRuns() {
         return Runs;
     }
     private void setId(int id)
